@@ -1,0 +1,45 @@
+# === LUNOR KIT Workspace .gitignore ===
+
+# Dependencies
+node_modules/
+.venv/
+vendor/
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# OS junk
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# IDE (keep .vscode for shared settings)
+.idea/
+*.iml
+
+# Debug & temp artifacts
+*.backup
+*.log
+install.log
+diagnostic-result.json
+*.png.backup
+
+# Coverage
+.coverage
+coverage/
+.nyc_output/
+
+# Lock file strategy: each sub-project owns its own lock file
+# Do NOT commit root-level lock files
+package-lock.json
+yarn.lock

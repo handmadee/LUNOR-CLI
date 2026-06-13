@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "payment-extension",
+  "name": "Payment Extension",
+  "category": "extensions",
+  "version": "0.1.0",
+  "description": "Design and review payment extension flows.",
+  "entry": "SKILL.md",
+  "dependsOn": ["backend-api", "security-appsec"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

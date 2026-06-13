@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "supply-chain-security",
+  "name": "Supply Chain Security",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Review dependencies, scripts, package managers, lockfiles, CI secrets, provenance, and third-party skill/plugin risk.",
+  "entry": "SKILL.md",
+  "dependsOn": ["security-appsec", "code-audit"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}

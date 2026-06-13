@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0.0",
+  "defaultTrust": {
+    "source": "local",
+    "reviewRequired": false
+  },
+  "thirdPartyPolicy": {
+    "reviewRequired": true,
+    "auditBeforeEnable": true,
+    "blockedPatterns": [
+      "rm -rf",
+      "git reset --hard",
+      "curl ... | sh",
+      "secret exfiltration"
+    ]
+  }
+}

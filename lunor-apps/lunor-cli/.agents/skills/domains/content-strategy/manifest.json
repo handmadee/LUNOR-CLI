@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "content-strategy",
+  "name": "Content Strategy",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Plan content systems, brand voice, editorial workflows, and reusable content operations.",
+  "entry": "SKILL.md",
+  "dependsOn": [],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}

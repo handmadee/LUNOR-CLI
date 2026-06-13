@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "devops-deployment",
+  "name": "DevOps Deployment",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Review deployment readiness and operational safety.",
+  "entry": "SKILL.md",
+  "dependsOn": [],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

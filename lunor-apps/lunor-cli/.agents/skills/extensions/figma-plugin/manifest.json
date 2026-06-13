@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "figma-plugin",
+  "name": "Figma Plugin",
+  "category": "extensions",
+  "version": "0.1.0",
+  "description": "Design and review Figma plugin extensions.",
+  "entry": "SKILL.md",
+  "dependsOn": ["frontend-ui", "intellectual-property"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

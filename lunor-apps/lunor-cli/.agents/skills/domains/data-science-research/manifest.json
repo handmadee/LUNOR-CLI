@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "data-science-research",
+  "name": "Data Science Research",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Plan and review data analysis, notebooks, experiments, literature synthesis, and reproducible research workflows.",
+  "entry": "SKILL.md",
+  "dependsOn": ["analytics-measurement"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}

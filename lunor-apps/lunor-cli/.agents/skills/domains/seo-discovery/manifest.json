@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "seo-discovery",
+  "name": "SEO Discovery",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Review technical SEO, information architecture, programmatic SEO, schema, and AI search visibility.",
+  "entry": "SKILL.md",
+  "dependsOn": ["content-strategy", "analytics-measurement"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}

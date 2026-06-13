@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "backend-auth",
+  "name": "Backend Auth",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Design and review authentication, authorization, session, token, and permission flows.",
+  "entry": "SKILL.md",
+  "dependsOn": ["security-appsec"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

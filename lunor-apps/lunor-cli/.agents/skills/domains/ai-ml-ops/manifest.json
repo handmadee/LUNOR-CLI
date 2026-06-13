@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "ai-ml-ops",
+  "name": "AI ML Ops",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Review AI/ML product operations, evals, prompts, datasets, model routing, observability, and deployment safety.",
+  "entry": "SKILL.md",
+  "dependsOn": ["analytics-measurement", "security-appsec"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}

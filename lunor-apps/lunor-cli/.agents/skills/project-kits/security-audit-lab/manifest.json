@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "security-audit-lab",
+  "name": "Security Audit Lab",
+  "category": "project-kits",
+  "version": "0.1.0",
+  "description": "Compose defensive security review skills for code audit, black-box review, supply chain, compliance, and smart contracts.",
+  "entry": "SKILL.md",
+  "dependsOn": ["code-audit", "security-black-box-review", "supply-chain-security", "compliance-readiness", "smart-contract-security"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "backend-api",
+  "name": "Backend API",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Design and review production backend APIs.",
+  "entry": "SKILL.md",
+  "dependsOn": [],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode", "gemini", "roocode", "continue"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

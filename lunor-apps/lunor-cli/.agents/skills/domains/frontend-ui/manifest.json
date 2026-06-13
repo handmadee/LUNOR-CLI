@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "frontend-ui",
+  "name": "Frontend UI",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Design and review production frontend UI systems.",
+  "entry": "SKILL.md",
+  "dependsOn": [],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

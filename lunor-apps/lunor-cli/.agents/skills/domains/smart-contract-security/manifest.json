@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "smart-contract-security",
+  "name": "Smart Contract Security",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Review smart contract design and tests for defensive security, invariants, access control, and protocol risk.",
+  "entry": "SKILL.md",
+  "dependsOn": ["security-appsec", "code-audit"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}

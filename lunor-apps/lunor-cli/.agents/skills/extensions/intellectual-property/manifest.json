@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "intellectual-property",
+  "name": "Intellectual Property",
+  "category": "extensions",
+  "version": "0.1.0",
+  "description": "Review intellectual-property and licensing risks in extension and product workflows.",
+  "entry": "SKILL.md",
+  "dependsOn": [],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

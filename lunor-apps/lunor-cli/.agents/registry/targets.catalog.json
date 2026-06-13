@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "1.0.0",
+  "targets": [
+    {
+      "id": "claude",
+      "displayName": "Claude Code",
+      "outputRoot": ".claude",
+      "supportsSkillFolder": true,
+      "supportsRules": false,
+      "supportsSteering": false,
+      "supportsAgents": false
+    },
+    {
+      "id": "cursor",
+      "displayName": "Cursor",
+      "outputRoot": ".cursor",
+      "supportsSkillFolder": true,
+      "supportsRules": true,
+      "supportsSteering": false,
+      "supportsAgents": false
+    },
+    {
+      "id": "kiro",
+      "displayName": "Kiro",
+      "outputRoot": ".kiro",
+      "supportsSkillFolder": true,
+      "supportsRules": false,
+      "supportsSteering": true,
+      "supportsAgents": false
+    },
+    {
+      "id": "antigravity",
+      "displayName": "Antigravity",
+      "outputRoot": ".agent",
+      "supportsSkillFolder": true,
+      "supportsRules": false,
+      "supportsSteering": false,
+      "supportsAgents": false
+    },
+    {
+      "id": "codex",
+      "displayName": "Codex CLI",
+      "outputRoot": ".codex",
+      "supportsSkillFolder": true,
+      "supportsRules": false,
+      "supportsSteering": false,
+      "supportsAgents": false
+    },
+    {
+      "id": "opencode",
+      "displayName": "OpenCode",
+      "outputRoot": ".opencode",
+      "supportsSkillFolder": false,
+      "supportsRules": false,
+      "supportsSteering": false,
+      "supportsAgents": true
+    },
+    {
+      "id": "gemini",
+      "displayName": "Gemini CLI",
+      "outputRoot": ".gemini",
+      "supportsSkillFolder": true,
+      "supportsRules": false,
+      "supportsSteering": false,
+      "supportsAgents": false
+    },
+    {
+      "id": "roocode",
+      "displayName": "Roo Code",
+      "outputRoot": ".roo",
+      "supportsSkillFolder": true,
+      "supportsRules": false,
+      "supportsSteering": false,
+      "supportsAgents": false
+    },
+    {
+      "id": "continue",
+      "displayName": "Continue",
+      "outputRoot": ".continue",
+      "supportsSkillFolder": true,
+      "supportsRules": false,
+      "supportsSteering": false,
+      "supportsAgents": false
+    }
+  ]
+}

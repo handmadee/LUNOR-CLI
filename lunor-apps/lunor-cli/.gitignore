@@ -1,0 +1,38 @@
+# ClaudeKit generated .gitignore
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Claude Code
+.claude/settings.local.json
+.claude/todos/
+.claude/scratchpads/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build outputs
+dist/
+build/
+*.log
+.DS_Store
+.env
+.env.local
+coverage/
+*.tsbuildinfo

@@ -1,0 +1,559 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-05-11T16:54:25.116Z",
+  "skills": [
+    {
+      "id": "ai-ml-ops",
+      "name": "AI ML Ops",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "analytics-measurement",
+        "security-appsec"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "ai-product-lab",
+      "name": "AI Product Lab",
+      "category": "project-kits",
+      "version": "0.1.0",
+      "dependsOn": [
+        "product-strategy",
+        "ai-ml-ops",
+        "data-science-research",
+        "backend-api",
+        "security-appsec",
+        "cloud-infrastructure"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "analytics-measurement",
+      "name": "Analytics Measurement",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "backend-api",
+      "name": "Backend API",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode",
+        "gemini",
+        "roocode",
+        "continue"
+      ]
+    },
+    {
+      "id": "backend-auth",
+      "name": "Backend Auth",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "security-appsec"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "browser-extension",
+      "name": "Browser Extension",
+      "category": "extensions",
+      "version": "0.1.0",
+      "dependsOn": [
+        "frontend-ui",
+        "security-appsec",
+        "intellectual-property"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "cloud-infrastructure",
+      "name": "Cloud Infrastructure",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "devops-deployment",
+        "security-appsec"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "code-audit",
+      "name": "Code Audit",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "security-appsec"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "compliance-readiness",
+      "name": "Compliance Readiness",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "security-appsec",
+        "analytics-measurement"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "content-strategy",
+      "name": "Content Strategy",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "conversion-optimization",
+      "name": "Conversion Optimization",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "analytics-measurement"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "data-science-research",
+      "name": "Data Science Research",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "analytics-measurement"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "design-system",
+      "name": "Design System",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "frontend-ui"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "devops-deployment",
+      "name": "DevOps Deployment",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "ecommerce-admin",
+      "name": "Ecommerce Admin",
+      "category": "project-kits",
+      "version": "0.1.0",
+      "dependsOn": [
+        "backend-api",
+        "backend-auth",
+        "frontend-ui",
+        "security-appsec",
+        "devops-deployment"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "ecommerce-storefront",
+      "name": "Ecommerce Storefront",
+      "category": "project-kits",
+      "version": "0.1.0",
+      "dependsOn": [
+        "frontend-ui",
+        "backend-api",
+        "payment-extension",
+        "security-appsec",
+        "devops-deployment"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "extension-builder",
+      "name": "Extension Builder",
+      "category": "project-kits",
+      "version": "0.1.0",
+      "dependsOn": [
+        "browser-extension",
+        "figma-plugin",
+        "payment-extension",
+        "security-black-box-review",
+        "intellectual-property"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "figma-plugin",
+      "name": "Figma Plugin",
+      "category": "extensions",
+      "version": "0.1.0",
+      "dependsOn": [
+        "frontend-ui",
+        "intellectual-property"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "frontend-ui",
+      "name": "Frontend UI",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "growth-engineering",
+      "name": "Growth Engineering",
+      "category": "project-kits",
+      "version": "0.1.0",
+      "dependsOn": [
+        "product-strategy",
+        "conversion-optimization",
+        "seo-discovery",
+        "content-strategy",
+        "sales-revops"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "intellectual-property",
+      "name": "Intellectual Property",
+      "category": "extensions",
+      "version": "0.1.0",
+      "dependsOn": [],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "mobile-app",
+      "name": "Mobile App",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "frontend-ui",
+        "analytics-measurement",
+        "security-appsec"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "payment-extension",
+      "name": "Payment Extension",
+      "category": "extensions",
+      "version": "0.1.0",
+      "dependsOn": [
+        "backend-api",
+        "security-appsec"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "product-strategy",
+      "name": "Product Strategy",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "analytics-measurement"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "sales-revops",
+      "name": "Sales RevOps",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "analytics-measurement"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "security-appsec",
+      "name": "Security AppSec",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "security-audit-lab",
+      "name": "Security Audit Lab",
+      "category": "project-kits",
+      "version": "0.1.0",
+      "dependsOn": [
+        "code-audit",
+        "security-black-box-review",
+        "supply-chain-security",
+        "compliance-readiness",
+        "smart-contract-security"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "security-black-box-review",
+      "name": "Security Black Box Review",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "security-appsec"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "seo-discovery",
+      "name": "SEO Discovery",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "content-strategy",
+        "analytics-measurement"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "smart-contract-security",
+      "name": "Smart Contract Security",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "security-appsec",
+        "code-audit"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    },
+    {
+      "id": "supply-chain-security",
+      "name": "Supply Chain Security",
+      "category": "domains",
+      "version": "0.1.0",
+      "dependsOn": [
+        "security-appsec",
+        "code-audit"
+      ],
+      "compatibleTargets": [
+        "claude",
+        "cursor",
+        "kiro",
+        "antigravity",
+        "codex",
+        "opencode"
+      ]
+    }
+  ]
+}

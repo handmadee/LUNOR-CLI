@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "security-black-box-review",
+  "name": "Security Black Box Review",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Run defensive black-box style security review from public behavior, inputs, outputs, docs, and safe observations.",
+  "entry": "SKILL.md",
+  "dependsOn": ["security-appsec"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "code-audit",
+  "name": "Code Audit",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Review code for security, correctness, maintainability, reliability, and evidence-backed findings.",
+  "entry": "SKILL.md",
+  "dependsOn": ["security-appsec"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "ai-product-lab",
+  "name": "AI Product Lab",
+  "category": "project-kits",
+  "version": "0.1.0",
+  "description": "Compose skills for AI product development, model evals, data science, product strategy, analytics, security, and deployment.",
+  "entry": "SKILL.md",
+  "dependsOn": ["product-strategy", "ai-ml-ops", "data-science-research", "backend-api", "security-appsec", "cloud-infrastructure"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}

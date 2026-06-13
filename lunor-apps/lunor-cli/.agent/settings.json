@@ -1,0 +1,31 @@
+{
+  "includeCoAuthoredBy": false,
+  "statusLine": {
+    "type": "command",
+    "command": "node .angtigravity/statusline.cjs",
+    "padding": 0
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .angtigravity/hooks/dev-rules-reminder.cjs"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Glob|Grep|Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .angtigravity/hooks/scout-block.cjs"
+          }
+        ]
+      }
+    ]
+  }
+}

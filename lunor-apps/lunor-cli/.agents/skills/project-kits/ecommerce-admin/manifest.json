@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "ecommerce-admin",
+  "name": "Ecommerce Admin",
+  "category": "project-kits",
+  "version": "0.1.0",
+  "description": "Compose skills for ecommerce back office, catalog, orders, refunds, customer support, and operations tools.",
+  "entry": "SKILL.md",
+  "dependsOn": ["backend-api", "backend-auth", "frontend-ui", "security-appsec", "devops-deployment"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

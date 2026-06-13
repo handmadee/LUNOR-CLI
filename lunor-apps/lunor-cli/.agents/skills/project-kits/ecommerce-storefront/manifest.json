@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "ecommerce-storefront",
+  "name": "Ecommerce Storefront",
+  "category": "project-kits",
+  "version": "0.1.0",
+  "description": "Compose skills for production ecommerce storefront projects.",
+  "entry": "SKILL.md",
+  "dependsOn": ["frontend-ui", "backend-api", "payment-extension", "security-appsec", "devops-deployment"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

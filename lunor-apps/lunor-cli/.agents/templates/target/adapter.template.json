@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "target-id",
+  "displayName": "Target Name",
+  "outputRoot": ".target",
+  "renderModes": ["skills"]
+}

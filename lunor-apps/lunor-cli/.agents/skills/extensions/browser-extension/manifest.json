@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "browser-extension",
+  "name": "Browser Extension",
+  "category": "extensions",
+  "version": "0.1.0",
+  "description": "Design and review browser extension architecture, manifests, permissions, content scripts, background workers, and safe data access.",
+  "entry": "SKILL.md",
+  "dependsOn": ["frontend-ui", "security-appsec", "intellectual-property"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

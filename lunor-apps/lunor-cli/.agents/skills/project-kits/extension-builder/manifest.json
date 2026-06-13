@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "extension-builder",
+  "name": "Extension Builder",
+  "category": "project-kits",
+  "version": "0.1.0",
+  "description": "Compose skills for browser, Figma, payment, webhook, and MCP extension projects.",
+  "entry": "SKILL.md",
+  "dependsOn": ["browser-extension", "figma-plugin", "payment-extension", "security-black-box-review", "intellectual-property"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {
+    "filesystem": ["read"],
+    "shell": [],
+    "network": [],
+    "browser": [],
+    "mcp": []
+  },
+  "trust": {
+    "source": "local",
+    "reviewRequired": false
+  }
+}

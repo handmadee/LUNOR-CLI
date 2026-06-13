@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "cloud-infrastructure",
+  "name": "Cloud Infrastructure",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Review cloud architecture, IaC, environments, networking, secrets, cost, observability, and rollout safety.",
+  "entry": "SKILL.md",
+  "dependsOn": ["devops-deployment", "security-appsec"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}

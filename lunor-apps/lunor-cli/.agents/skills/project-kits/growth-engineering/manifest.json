@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "growth-engineering",
+  "name": "Growth Engineering",
+  "category": "project-kits",
+  "version": "0.1.0",
+  "description": "Compose skills for growth engineering, CRO, SEO, analytics, content, sales RevOps, and product experiments.",
+  "entry": "SKILL.md",
+  "dependsOn": ["product-strategy", "conversion-optimization", "seo-discovery", "content-strategy", "sales-revops"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}

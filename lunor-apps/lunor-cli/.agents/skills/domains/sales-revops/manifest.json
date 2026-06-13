@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "sales-revops",
+  "name": "Sales RevOps",
+  "category": "domains",
+  "version": "0.1.0",
+  "description": "Design lead lifecycle, CRM hygiene, routing, sales enablement, pricing, and revenue operations workflows.",
+  "entry": "SKILL.md",
+  "dependsOn": ["analytics-measurement"],
+  "compatibleTargets": ["claude", "cursor", "kiro", "antigravity", "codex", "opencode"],
+  "permissions": {"filesystem": ["read"], "shell": [], "network": [], "browser": [], "mcp": []},
+  "trust": {"source": "local", "reviewRequired": false}
+}
