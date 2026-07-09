@@ -85,6 +85,51 @@ base_url = "https://proxy.lunor.cloud/v1/"
         expect.stringContaining('Removed local .codex/ directory'),
       ]);
     });
+
+    it('should not delete global ~/.codex when cwd is home', async () => {
+      processCwdSpy.mockReturnValue('/mock-home');
+      vi.mocked(existsSync).mockImplementation((path: any) => {
+        if (typeof path === 'string') {
+          if (path.endsWith('.codex/config.toml') || path.endsWith('/.codex/config.toml')) return false;
+          if (path === '/mock-home/.codex' || path.endsWith('/mock-home/.codex')) return true;
+        }
+        return false;
+      });
+
+      const result = await resetCodex();
+
+      expect(rmSync).not.toHaveBeenCalled();
+      expect(result.steps.some((s) => s.includes('Skipped removing .codex/'))).toBe(true);
+    });
+
+    it('should revert model even when the line has a trailing comment', async () => {
+      const mockToml = `
+model = "gpt-5.5" # Or gpt-5.5, you can also use any of the models that we support.
+model_provider = "cliproxyapi"
+supports_websockets = true
+
+[model_providers.cliproxyapi]
+base_url = "https://proxy.lunor.cloud/v1/"
+`;
+      vi.mocked(existsSync).mockImplementation((path: any) => {
+        if (typeof path === 'string' && path.includes('.codex/config.toml')) return true;
+        return false;
+      });
+      vi.mocked(readFileSync).mockReturnValue(mockToml);
+
+      await resetCodex();
+
+      expect(writeFileSync).toHaveBeenCalledWith(
+        expect.stringContaining('.codex/config.toml'),
+        expect.stringContaining('model = "gpt-4o"'),
+        'utf-8'
+      );
+      expect(writeFileSync).toHaveBeenCalledWith(
+        expect.stringContaining('.codex/config.toml'),
+        expect.not.stringContaining('cliproxyapi'),
+        'utf-8'
+      );
+    });
   });
 
   describe('resetClaude', () => {

@@ -15,7 +15,7 @@
 
 import pc from 'picocolors';
 import { existsSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import { PATHS } from '../constants/paths.js';
 import { logger } from '../utils/logger.js';
@@ -25,6 +25,39 @@ export type ResetTarget = 'codex' | 'claude' | 'all';
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * True when `candidate` resolves to the global home config dir (e.g. ~/.codex).
+ * Used to prevent wiping the global Codex/Claude home when cwd is $HOME.
+ */
+function isGlobalHomeDotDir(candidate: string, dirName: '.codex' | '.claude'): boolean {
+  return resolve(candidate) === resolve(homedir(), dirName);
+}
+
+/**
+ * Remove a project-local dotdir, never the global ~/.codex or ~/.claude.
+ */
+function removeLocalDotDir(
+  dirName: '.codex' | '.claude',
+  steps: string[],
+): void {
+  const localDir = join(process.cwd(), dirName);
+  if (!existsSync(localDir)) return;
+
+  if (isGlobalHomeDotDir(localDir, dirName)) {
+    steps.push(
+      `  ${pc.dim(`Skipped removing ${dirName}/`)} — matches global ~/${dirName} (cwd is home)`,
+    );
+    return;
+  }
+
+  try {
+    rmSync(localDir, { recursive: true, force: true });
+    steps.push(`✓ Removed local ${pc.cyan(`${dirName}/`)} directory from project`);
+  } catch (err: any) {
+    steps.push(`${pc.red('✗')} Failed to remove local ${dirName}/: ${err.message}`);
+  }
+}
 
 /**
  * Remove a top-level key from a TOML string (before the first [section]).
@@ -126,12 +159,14 @@ export async function resetCodex(): Promise<{ envUnsets: string[]; steps: string
       const r4 = removeTomlKey(toml, 'plan_mode_reasoning_effort');
       if (r4.modified) { toml = r4.content; anyChange = true; }
 
-      // Revert model from gpt-5.5 → gpt-4o (safe native default)
-      const r5 = replaceTomlKeyValue(toml, 'model', 'gpt-4o');
-      // Only mark as changed if the original was gpt-5.5
-      if (r5.modified && toml.includes('model = "gpt-5.5"')) {
-        toml = r5.content;
-        anyChange = true;
+      // Revert proxy-injected model (gpt-5.5) → gpt-4o (safe native ChatGPT default)
+      // Match even when the line has a trailing comment.
+      if (/(^|\n)\s*model\s*=\s*"gpt-5\.5"/.test(toml)) {
+        const r5 = replaceTomlKeyValue(toml, 'model', 'gpt-4o');
+        if (r5.modified) {
+          toml = r5.content;
+          anyChange = true;
+        }
       }
 
       // Remove [model_providers.cliproxyapi] block
@@ -153,16 +188,8 @@ export async function resetCodex(): Promise<{ envUnsets: string[]; steps: string
     steps.push(`  ${pc.dim('~/.codex/config.toml')} — not found, nothing to revert`);
   }
 
-  // 2. Remove local .codex/ in cwd (if any)
-  const localCodexDir = join(process.cwd(), '.codex');
-  if (existsSync(localCodexDir)) {
-    try {
-      rmSync(localCodexDir, { recursive: true, force: true });
-      steps.push(`✓ Removed local ${pc.cyan('.codex/')} directory from project`);
-    } catch (err: any) {
-      steps.push(`${pc.red('✗')} Failed to remove local .codex/: ${err.message}`);
-    }
-  }
+  // 2. Remove project-local .codex/ only — never the global ~/.codex
+  removeLocalDotDir('.codex', steps);
 
   return { envUnsets, steps };
 }
@@ -265,16 +292,8 @@ export async function resetClaude(): Promise<{ envUnsets: string[]; steps: strin
     }
   }
 
-  // 5. Remove local .claude/ in cwd (if any)
-  const localClaudeDir = join(process.cwd(), '.claude');
-  if (existsSync(localClaudeDir)) {
-    try {
-      rmSync(localClaudeDir, { recursive: true, force: true });
-      steps.push(`✓ Removed local ${pc.cyan('.claude/')} directory from project`);
-    } catch (err: any) {
-      steps.push(`${pc.red('✗')} Failed to remove local .claude/: ${err.message}`);
-    }
-  }
+  // 5. Remove project-local .claude/ only — never the global ~/.claude
+  removeLocalDotDir('.claude', steps);
 
   return { envUnsets, steps };
 }
