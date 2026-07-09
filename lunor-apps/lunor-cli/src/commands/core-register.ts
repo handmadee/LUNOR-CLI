@@ -58,7 +58,7 @@ export function registerCoreCommands(program: Command): void {
 
   program
     .command('reset [target]')
-    .description('Reset Codex and/or Claude Code to original defaults (target: codex|claude|all)')
+    .description('Factory-reset Codex (keep prefs/plugins/auth) and/or Claude Code (target: codex|claude|all)')
     .option('--emit', 'Emit shell unset commands (used by the zsh wrapper)')
     .action(withErrorBoundary(
       async (target?: string, options?: { emit?: boolean }) => {

@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { existsSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
-import { resetCodex, resetClaude, resetCommand, emitResetCommand } from './reset.js';
+import { existsSync, readFileSync, writeFileSync, rmSync, unlinkSync } from 'node:fs';
+import {
+  resetCodex,
+  resetClaude,
+  resetCommand,
+  emitResetCommand,
+  buildFactoryCodexConfig,
+  extractPluginSections,
+} from './reset.js';
 import { PATHS } from '../constants/paths.js';
 
 vi.mock('node:fs');
@@ -24,6 +31,68 @@ describe('reset command functionality', () => {
     processCwdSpy.mockRestore();
   });
 
+  describe('buildFactoryCodexConfig', () => {
+    it('keeps prefs + plugins and drops model/proxy/mcp/projects', () => {
+      const input = `
+model = "gpt-5.5" # comment
+model_provider = "cliproxyapi"
+personality = "pragmatic"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+service_tier = "default"
+notify = ["/path/to/notify", "turn-ended"]
+model_reasoning_effort = "xhigh"
+supports_websockets = true
+
+[projects."/Users/admin"]
+trust_level = "trusted"
+
+[model_providers.cliproxyapi]
+base_url = "https://proxy.lunor.cloud/v1/"
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[mcp_servers.context7]
+command = "npx"
+`;
+      const out = buildFactoryCodexConfig(input);
+
+      expect(out).toContain('personality = "pragmatic"');
+      expect(out).toContain('approval_policy = "never"');
+      expect(out).toContain('sandbox_mode = "danger-full-access"');
+      expect(out).toContain('service_tier = "default"');
+      expect(out).toContain('notify = ["/path/to/notify", "turn-ended"]');
+      expect(out).toContain('[plugins."browser@openai-bundled"]');
+      expect(out).toContain('[plugins."pdf@openai-primary-runtime"]');
+
+      expect(out).not.toContain('model =');
+      expect(out).not.toContain('model_provider');
+      expect(out).not.toContain('cliproxy');
+      expect(out).not.toContain('model_reasoning_effort');
+      expect(out).not.toContain('supports_websockets');
+      expect(out).not.toContain('[projects.');
+      expect(out).not.toContain('mcp_servers');
+    });
+
+    it('extracts only plugin sections', () => {
+      const toml = `
+[plugins."a@x"]
+enabled = true
+
+[mcp_servers.x]
+command = "npx"
+
+[plugins."b@y"]
+enabled = false
+`;
+      expect(extractPluginSections(toml)).toHaveLength(2);
+    });
+  });
+
   describe('resetCodex', () => {
     it('should handle missing config file and missing local directory gracefully', async () => {
       vi.mocked(existsSync).mockReturnValue(false);
@@ -37,20 +106,29 @@ describe('reset command functionality', () => {
       expect(rmSync).not.toHaveBeenCalled();
     });
 
-    it('should modify config.toml and remove local .codex if they exist', async () => {
+    it('should factory-rewrite config.toml, clear models cache, and remove local .codex', async () => {
       const mockToml = `
 model = "gpt-5.5"
 model_provider = "cliproxyapi"
+personality = "pragmatic"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+service_tier = "default"
 supports_websockets = true
 model_reasoning_effort = "xhigh"
 plan_mode_reasoning_effort = "xhigh"
 
 [model_providers.cliproxyapi]
 base_url = "https://proxy.lunor.cloud/v1/"
+
+[plugins."browser@openai-bundled"]
+enabled = true
 `;
       vi.mocked(existsSync).mockImplementation((path: any) => {
         if (typeof path === 'string') {
           if (path.includes('.codex/config.toml')) return true;
+          if (path.includes('auth.json')) return true;
+          if (path.includes('models_cache.json')) return true;
           if (path.includes('/mock-cwd/.codex')) return true;
         }
         return false;
@@ -61,29 +139,29 @@ base_url = "https://proxy.lunor.cloud/v1/"
       const result = await resetCodex();
 
       expect(readFileSync).toHaveBeenCalled();
-      expect(writeFileSync).toHaveBeenCalledWith(
-        expect.stringContaining('.codex/config.toml'),
-        expect.not.stringContaining('model_provider'),
-        'utf-8'
+      const written = vi.mocked(writeFileSync).mock.calls.find(
+        (c) => typeof c[0] === 'string' && String(c[0]).includes('config.toml'),
       );
-      expect(writeFileSync).toHaveBeenCalledWith(
-        expect.stringContaining('.codex/config.toml'),
-        expect.stringContaining('model = "gpt-4o"'),
-        'utf-8'
-      );
-      expect(writeFileSync).toHaveBeenCalledWith(
-        expect.stringContaining('.codex/config.toml'),
-        expect.not.stringContaining('[model_providers.cliproxyapi]'),
-        'utf-8'
+      expect(written).toBeTruthy();
+      const content = String(written![1]);
+      expect(content).toContain('personality = "pragmatic"');
+      expect(content).toContain('approval_policy = "never"');
+      expect(content).toContain('[plugins."browser@openai-bundled"]');
+      expect(content).not.toContain('model_provider');
+      expect(content).not.toContain('cliproxyapi');
+      expect(content).not.toMatch(/^model\s*=/m);
+
+      expect(unlinkSync).toHaveBeenCalledWith(
+        expect.stringContaining('models_cache.json'),
       );
       expect(rmSync).toHaveBeenCalledWith(
         expect.stringContaining('/mock-cwd/.codex'),
-        { recursive: true, force: true }
+        { recursive: true, force: true },
       );
-      expect(result.steps).toEqual([
-        expect.stringContaining('Reverted ~/.codex/config.toml'),
-        expect.stringContaining('Removed local .codex/ directory'),
-      ]);
+      expect(result.steps.some((s) => s.includes('Factory-reset'))).toBe(true);
+      expect(result.steps.some((s) => s.includes('auth.json') && s.includes('preserved'))).toBe(true);
+      expect(result.steps.some((s) => s.includes('models_cache.json'))).toBe(true);
+      expect(result.steps.some((s) => s.includes('Removed local .codex/'))).toBe(true);
     });
 
     it('should not delete global ~/.codex when cwd is home', async () => {
@@ -102,10 +180,12 @@ base_url = "https://proxy.lunor.cloud/v1/"
       expect(result.steps.some((s) => s.includes('Skipped removing .codex/'))).toBe(true);
     });
 
-    it('should revert model even when the line has a trailing comment', async () => {
+    it('should drop model pin even when the line has a trailing comment', async () => {
       const mockToml = `
 model = "gpt-5.5" # Or gpt-5.5, you can also use any of the models that we support.
 model_provider = "cliproxyapi"
+personality = "pragmatic"
+approval_policy = "never"
 supports_websockets = true
 
 [model_providers.cliproxyapi]
@@ -119,16 +199,14 @@ base_url = "https://proxy.lunor.cloud/v1/"
 
       await resetCodex();
 
-      expect(writeFileSync).toHaveBeenCalledWith(
-        expect.stringContaining('.codex/config.toml'),
-        expect.stringContaining('model = "gpt-4o"'),
-        'utf-8'
+      const written = vi.mocked(writeFileSync).mock.calls.find(
+        (c) => typeof c[0] === 'string' && String(c[0]).includes('config.toml'),
       );
-      expect(writeFileSync).toHaveBeenCalledWith(
-        expect.stringContaining('.codex/config.toml'),
-        expect.not.stringContaining('cliproxyapi'),
-        'utf-8'
-      );
+      expect(written).toBeTruthy();
+      const content = String(written![1]);
+      expect(content).not.toMatch(/model\s*=/);
+      expect(content).not.toContain('cliproxyapi');
+      expect(content).toContain('personality = "pragmatic"');
     });
   });
 

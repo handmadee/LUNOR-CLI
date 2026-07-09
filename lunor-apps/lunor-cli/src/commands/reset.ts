@@ -2,8 +2,11 @@
  * `lunor reset [target]` — Reset Codex and/or Claude Code to their original defaults.
  *
  * Targets:
- *   codex   — Revert ~/.codex/config.toml to native ChatGPT/OpenAI defaults
- *             and remove any local .codex/ directory in cwd.
+ *   codex   — Factory-style reset of ~/.codex/config.toml for native ChatGPT auth:
+ *             keep approval_policy, sandbox_mode, personality, service_tier, notify,
+ *             [plugins.*], and never touch auth.json. Drop model pins / proxy / MCP /
+ *             projects so Codex re-resolves models for the account. Clear models_cache.
+ *             Also remove any project-local .codex/ (never the global ~/.codex).
  *   claude  — Remove API key overrides / proxy config from ~/.claude.json and
  *             ~/.claude/settings.json, and clear active CLI state + local .claude/ dir.
  *   all     — Both codex + claude (default when target is omitted).
@@ -14,13 +17,22 @@
  */
 
 import pc from 'picocolors';
-import { existsSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, rmSync, unlinkSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { homedir } from 'node:os';
 import { PATHS } from '../constants/paths.js';
 import { logger } from '../utils/logger.js';
 
 export type ResetTarget = 'codex' | 'claude' | 'all';
+
+/** Top-level keys preserved across a Codex factory reset. */
+export const CODEX_KEEP_TOP_LEVEL_KEYS = [
+  'personality',
+  'approval_policy',
+  'sandbox_mode',
+  'service_tier',
+  'notify',
+] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -60,11 +72,12 @@ function removeLocalDotDir(
 }
 
 /**
- * Remove a top-level key from a TOML string (before the first [section]).
+ * Read a top-level TOML assignment line value (raw RHS, including quotes/brackets).
+ * Only scans before the first [section].
  */
-function removeTomlKey(toml: string, key: string): { content: string; modified: boolean } {
+function readTopLevelRawValue(toml: string, key: string): string | null {
   const lines = toml.split(/\r?\n/);
-  let firstTableIndex = -1;
+  let firstTableIndex = lines.length;
   for (let i = 0; i < lines.length; i++) {
     const trimmed = lines[i].trim();
     if (trimmed.startsWith('[') && !trimmed.startsWith('#')) {
@@ -72,58 +85,86 @@ function removeTomlKey(toml: string, key: string): { content: string; modified: 
       break;
     }
   }
-  const limit = firstTableIndex !== -1 ? firstTableIndex : lines.length;
-  for (let i = 0; i < limit; i++) {
-    if (new RegExp(`^\\s*${key}\\s*=`).test(lines[i])) {
-      lines.splice(i, 1);
-      return { content: lines.join('\n'), modified: true };
+  const re = new RegExp(`^\\s*${key}\\s*=\\s*(.+?)\\s*$`);
+  for (let i = 0; i < firstTableIndex; i++) {
+    // Strip trailing inline comments carefully: only for simple "..." values after #
+    const line = lines[i];
+    const m = re.exec(line);
+    if (!m) continue;
+    let rhs = m[1];
+    // If value is a quoted string, keep through closing quote; else drop # comment
+    if (rhs.startsWith('"')) {
+      const end = rhs.indexOf('"', 1);
+      if (end !== -1) rhs = rhs.slice(0, end + 1);
+    } else if (rhs.startsWith('[')) {
+      // array / notify — keep full RHS, strip trailing comment after ]
+      const end = rhs.lastIndexOf(']');
+      if (end !== -1) rhs = rhs.slice(0, end + 1);
+    } else {
+      rhs = rhs.replace(/\s+#.*$/, '');
     }
+    return rhs.trim();
   }
-  return { content: toml, modified: false };
+  return null;
 }
 
 /**
- * Replace a top-level key value in a TOML string (before the first [section]).
+ * Extract full [plugins.*] section blocks (header + body until next [section]).
  */
-function replaceTomlKeyValue(toml: string, key: string, newValue: string): { content: string; modified: boolean } {
+export function extractPluginSections(toml: string): string[] {
   const lines = toml.split(/\r?\n/);
-  let firstTableIndex = -1;
-  for (let i = 0; i < lines.length; i++) {
+  const blocks: string[] = [];
+  let i = 0;
+  while (i < lines.length) {
     const trimmed = lines[i].trim();
-    if (trimmed.startsWith('[') && !trimmed.startsWith('#')) {
-      firstTableIndex = i;
-      break;
+    if (trimmed.startsWith('[plugins.') && trimmed.endsWith(']')) {
+      const start = i;
+      i += 1;
+      while (i < lines.length) {
+        const t = lines[i].trim();
+        if (t.startsWith('[') && !t.startsWith('#')) break;
+        i += 1;
+      }
+      // Drop trailing blank lines inside the block
+      let end = i;
+      while (end > start + 1 && lines[end - 1].trim() === '') end -= 1;
+      blocks.push(lines.slice(start, end).join('\n'));
+      continue;
     }
+    i += 1;
   }
-  const limit = firstTableIndex !== -1 ? firstTableIndex : lines.length;
-  for (let i = 0; i < limit; i++) {
-    if (new RegExp(`^\\s*${key}\\s*=`).test(lines[i])) {
-      lines[i] = `${key} = "${newValue}"`;
-      return { content: lines.join('\n'), modified: true };
-    }
-  }
-  return { content: toml, modified: false };
+  return blocks;
 }
 
 /**
- * Remove a [section] block (and all its lines up to the next [section]) from a TOML string.
+ * Build a factory-style Codex config: keep selected prefs + plugins only.
+ * No model pin, no proxy, no MCP, no projects — so models resolve for the account.
  */
-function removeTomlSection(toml: string, sectionHeader: string): { content: string; modified: boolean } {
-  const lines = toml.split(/\r?\n/);
-  let startIdx = -1;
-  let endIdx = lines.length;
-  for (let i = 0; i < lines.length; i++) {
-    const trimmed = lines[i].trim();
-    if (trimmed === sectionHeader) {
-      startIdx = i;
-    } else if (startIdx !== -1 && trimmed.startsWith('[') && !trimmed.startsWith('#')) {
-      endIdx = i;
-      break;
+export function buildFactoryCodexConfig(existingToml: string): string {
+  const parts: string[] = [
+    '# Factory-style Codex config (native ChatGPT auth)',
+    '# No model pin — Codex selects models available to this account.',
+    '# auth.json is never modified by lunor reset.',
+  ];
+
+  for (const key of CODEX_KEEP_TOP_LEVEL_KEYS) {
+    const raw = readTopLevelRawValue(existingToml, key);
+    if (raw !== null) {
+      parts.push(`${key} = ${raw}`);
     }
   }
-  if (startIdx === -1) return { content: toml, modified: false };
-  lines.splice(startIdx, endIdx - startIdx);
-  return { content: lines.join('\n'), modified: true };
+
+  const plugins = extractPluginSections(existingToml);
+  if (plugins.length > 0) {
+    parts.push('');
+    parts.push('# --- plugins kept ---');
+    for (const block of plugins) {
+      parts.push(block);
+      parts.push('');
+    }
+  }
+
+  return `${parts.join('\n').replace(/\n{3,}/g, '\n\n').trim()}\n`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -134,61 +175,51 @@ export async function resetCodex(): Promise<{ envUnsets: string[]; steps: string
   const steps: string[] = [];
   const envUnsets: string[] = [];
 
-  // 1. Revert ~/.codex/config.toml
   const codexDir = join(homedir(), '.codex');
   const configTomlPath = join(codexDir, 'config.toml');
+  const modelsCachePath = join(codexDir, 'models_cache.json');
 
+  // 1. Factory-rewrite ~/.codex/config.toml (keep prefs + plugins; drop model pin / proxy)
+  //    Never touch auth.json.
   if (existsSync(configTomlPath)) {
     try {
-      let toml = readFileSync(configTomlPath, 'utf-8');
-      let anyChange = false;
+      const existing = readFileSync(configTomlPath, 'utf-8');
+      const next = buildFactoryCodexConfig(existing);
 
-      // Remove model_provider key
-      const r1 = removeTomlKey(toml, 'model_provider');
-      if (r1.modified) { toml = r1.content; anyChange = true; }
-
-      // Remove supports_websockets key
-      const r2 = removeTomlKey(toml, 'supports_websockets');
-      if (r2.modified) { toml = r2.content; anyChange = true; }
-
-      // Remove model_reasoning_effort key
-      const r3 = removeTomlKey(toml, 'model_reasoning_effort');
-      if (r3.modified) { toml = r3.content; anyChange = true; }
-
-      // Remove plan_mode_reasoning_effort key
-      const r4 = removeTomlKey(toml, 'plan_mode_reasoning_effort');
-      if (r4.modified) { toml = r4.content; anyChange = true; }
-
-      // Revert proxy-injected model (gpt-5.5) → gpt-4o (safe native ChatGPT default)
-      // Match even when the line has a trailing comment.
-      if (/(^|\n)\s*model\s*=\s*"gpt-5\.5"/.test(toml)) {
-        const r5 = replaceTomlKeyValue(toml, 'model', 'gpt-4o');
-        if (r5.modified) {
-          toml = r5.content;
-          anyChange = true;
-        }
+      if (next.trim() === existing.trim()) {
+        steps.push(`  ${pc.dim('~/.codex/config.toml')} — already factory-clean, no changes needed`);
+      } else {
+        writeFileSync(configTomlPath, next, { encoding: 'utf-8', mode: 0o600 });
+        steps.push(
+          `✓ Factory-reset ${pc.cyan('~/.codex/config.toml')} — kept prefs + plugins, dropped model pin / proxy / MCP / projects`,
+        );
       }
 
-      // Remove [model_providers.cliproxyapi] block
-      const r6 = removeTomlSection(toml, '[model_providers.cliproxyapi]');
-      if (r6.modified) { toml = r6.content; anyChange = true; }
-
-      if (anyChange) {
-        // Clean up triple+ blank lines
-        toml = toml.replace(/\n{3,}/g, '\n\n');
-        writeFileSync(configTomlPath, toml, 'utf-8');
-        steps.push(`✓ Reverted ${pc.cyan('~/.codex/config.toml')} to native ChatGPT / OpenAI defaults`);
+      // Confirm auth was left alone
+      const authPath = join(codexDir, 'auth.json');
+      if (existsSync(authPath)) {
+        steps.push(`  ${pc.dim('auth.json')} — preserved (ChatGPT / account login)`);
       } else {
-        steps.push(`  ${pc.dim('~/.codex/config.toml')} — already at native defaults, no changes needed`);
+        steps.push(`  ${pc.yellow('auth.json')} — not found; run ${pc.cyan('codex login')} if needed`);
       }
     } catch (err: any) {
-      steps.push(`${pc.red('✗')} Failed to revert ~/.codex/config.toml: ${err.message}`);
+      steps.push(`${pc.red('✗')} Failed to factory-reset ~/.codex/config.toml: ${err.message}`);
     }
   } else {
-    steps.push(`  ${pc.dim('~/.codex/config.toml')} — not found, nothing to revert`);
+    steps.push(`  ${pc.dim('~/.codex/config.toml')} — not found, nothing to rewrite`);
   }
 
-  // 2. Remove project-local .codex/ only — never the global ~/.codex
+  // 2. Clear models cache so Codex re-fetches models for this account
+  if (existsSync(modelsCachePath)) {
+    try {
+      unlinkSync(modelsCachePath);
+      steps.push(`✓ Cleared ${pc.cyan('models_cache.json')} — models will re-resolve for the account`);
+    } catch (err: any) {
+      steps.push(`${pc.red('✗')} Failed to clear models_cache.json: ${err.message}`);
+    }
+  }
+
+  // 3. Remove project-local .codex/ only — never the global ~/.codex
   removeLocalDotDir('.codex', steps);
 
   return { envUnsets, steps };
